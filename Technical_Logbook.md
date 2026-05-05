@@ -21,3 +21,15 @@ Docker installation imposed a setback as when trying to install it, it exited th
 While running the application, an error occurred stating that the module 'express' could not be found. This was due to dependencies not being installed. This was resolved by running 'npm install', which installed all required packages defined in package.json.
 
 Additionally, npm reported several vulnerabilities within the dependencies. This was addressed by running 'npm audit fix', which updated the affected packages to more secure versions.
+
+**Thoughts/Considerations:**
+
+The application structure is quite simple and basic as it does not contain any frontend server or database, and currently consists only of a backend server.
+
+The clear objective here is to transform it into a final web application that follows a three-tier structure.
+
+Additionally, virtual machines will not be used for the development of this application, as that level of virtualisation would require more resources and dependencies. Instead, containerisation will be used. This is where Docker comes in, allowing each part of the application to be isolated within its own environment with its own dependencies, while still running on the same host system.
+
+This approach also supports better scalability and aligns with cloud technologies, as containers can be deployed and managed more efficiently while sharing the same OS kernel.
+
+The project aligns with a Software as a Service (SaaS) model, as it focuses on delivering a complete web application, while utilising infrastructure and platform-level concepts such as containerisation and orchestration.
