@@ -44,8 +44,54 @@ The logic behind staged deployment is that a smaller image size implies a faster
 
 It is also worth mentioning from a security perspective that reducing unnecessary packages lowers the attack surface, as fewer potential entry points are exposed to an attacker.
 
+The Docker image size was verified after rebuilding the image and it was confirmed that the staged deployment significantly reduced the final image footprint compared to the original single-stage image.
+
 **Thoughts/Considerations:**
 
 Staged deployments should be preferred rather than treated as an optional implementation. They should be considered part of operational excellence procedures because they improve efficiency, scalability, and resource optimisation within an organisation or environment while also reducing unnecessary energy and storage consumption.
 
 Another important consideration is that staged deployments separate the build environment from the runtime environment, allowing only the required application files and production dependencies to be included in the final image.
+
+This approach also improves maintainability and portability, as the final runtime image becomes cleaner and easier to deploy consistently across different systems and cloud environments.
+
+[WEEK 2]
+
+**What I built:**
+
+Installed PostgreSQL as the database for the deployment of the application. The cloud-native expansion of the application is broken down into three tiers: backend, database, and frontend. PostgreSQL was installed for the database layer.
+
+A `todos` table was created inside the database and then both the backend and frontend were started using `npm start` to confirm functionality, networking, and database connectivity between the services.
+
+**Decisions I made and why:**
+
+Installed PostgreSQL with a custom password and used the default PostgreSQL port during installation for a faster setup and fewer networking modifications later on.
+
+**What went wrong/How I fixed it:**
+
+When PostgreSQL was first installed, a password was configured, however when trying to connect to the database the password authentication kept failing, therefore I could not access the database.
+
+The solution chosen for this issue was to completely remove PostgreSQL and its remaining data folders and then perform a clean installation again. More advanced methods such as recovering or manually modifying authentication files would have taken longer and added unnecessary complexity for a fresh database with no important data stored inside.
+
+After reinstalling PostgreSQL the login worked correctly.
+
+Another issue encountered was related to backend/database connectivity. The frontend displayed a network/authentication related error message and the backend later failed with database connection errors.
+
+After investigating the issue it was found that the `.env` configuration file contained the wrong database password and initially the wrong database connection context was also being used. PostgreSQL was defaulting to the `postgres` database while the backend application expected the `todo` database.
+
+This was fixed by:
+- Updating the `.env` file with the correct PostgreSQL password
+- Connecting directly to the correct database using:
+
+`psql -U postgres -h localhost -p 5432 -d todo`
+
+- Creating the required `todos` table inside the correct database
+
+After these corrections the backend and frontend communicated successfully and the application worked correctly.
+
+**Thoughts/Considerations:**
+
+Passwords configured within any environment should be stored somewhere secure and accessible only by the administrator in case authentication issues occur later on.
+
+Another important consideration is that database servers can contain multiple databases, therefore creating a table inside one database does not automatically make it accessible from another one. This became important during troubleshooting because the backend application expected the `todo` database specifically.
+
+The root issue with the original installation may also have been caused by a corrupted installation or authentication configuration, although this was not fully confirmed. Reinstalling PostgreSQL was the fastest and most practical solution in this situation.
