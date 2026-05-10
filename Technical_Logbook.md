@@ -33,3 +33,19 @@ Additionally, virtual machines will not be used for the development of this appl
 This approach also supports better scalability and aligns with cloud technologies, as containers can be deployed and managed more efficiently while sharing the same OS kernel.
 
 The project aligns with a Software as a Service (SaaS) model, as it focuses on delivering a complete web application, while utilising infrastructure and platform-level concepts such as containerisation and orchestration.
+
+[WEEK 2]
+
+**What I built**
+
+Built a staged deployment of an image with a smaller size than a traditional single-stage deployment. Alpine Linux was used for the second stage and non-required dependencies/packages were pruned so that only the necessary runtime components remained in the final image.
+
+The logic behind staged deployment is that a smaller image size implies a faster container deployment while using fewer OS resources and less storage space. Additionally, the implementation of staged deployments increases scalability and cost efficiency within a company, as fewer computing resources are consumed and containers can be deployed faster on a single host.
+
+It is also worth mentioning from a security perspective that reducing unnecessary packages lowers the attack surface, as fewer potential entry points are exposed to an attacker.
+
+**Thoughts/Considerations:**
+
+Staged deployments should be preferred rather than treated as an optional implementation. They should be considered part of operational excellence procedures because they improve efficiency, scalability, and resource optimisation within an organisation or environment while also reducing unnecessary energy and storage consumption.
+
+Another important consideration is that staged deployments separate the build environment from the runtime environment, allowing only the required application files and production dependencies to be included in the final image.
