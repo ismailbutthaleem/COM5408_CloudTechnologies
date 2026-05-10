@@ -1,0 +1,39 @@
+services:
+  database:
+    image:  postgres:16-alpine
+    restart:  always
+    environment:
+      POSTGRES_USER:  postgres
+      POSTGRES_PASSWORD:  ittaniga
+      POSTGRES_DB:  todo
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:  ./backend
+    restart:  always
+    ports:
+      - '5000:5000'
+    environment:
+      DB_HOST:  database
+      DB_USER:  postgres
+      DB_PASSWORD:  ittaniga
+      DB_NAME:  todo
+      DB_PORT:  5432
+      PORT: 5000
+    depends_on:
+      - database
+
+  frontend:
+    build:  ./web
+    restart:  always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
