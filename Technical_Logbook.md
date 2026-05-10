@@ -95,3 +95,36 @@ Passwords configured within any environment should be stored somewhere secure an
 Another important consideration is that database servers can contain multiple databases, therefore creating a table inside one database does not automatically make it accessible from another one. This became important during troubleshooting because the backend application expected the `todo` database specifically.
 
 The root issue with the original installation may also have been caused by a corrupted installation or authentication configuration, although this was not fully confirmed. Reinstalling PostgreSQL was the fastest and most practical solution in this situation.
+
+[WEEK 2]
+
+**What I built**
+
+Composed a Dockerfile for both the frontend (web) and backend. These allow each part of the application to run inside isolated containers that contain their own dependencies and packages, reducing attack surface while also increasing scalability, portability, and security.
+
+A `docker-compose.yml` file was also created as the orchestrator of the full three-tier stack. This means that the orchestrator defines what should be done and in which order. It also defines which parts of the orchestration are dependant on other services to correctly control the application deployment process.
+
+Orchestration also automates manual tasks such as defining networks, connectivity between containers, port mappings, environment variables, and persistent storage volumes.
+
+With orchestration these values and dependencies can be defined inside a single YAML file that, when executed, automatically builds and deploys the environment in the correct order. In this scenario the orchestrator built the frontend and backend images, created the containers for the three tiers of the application, configured the internal Docker network, and linked the services successfully.
+
+Another important concept implemented during this deployment was idempotency. Because the infrastructure and deployment logic are defined as code inside the Dockerfiles and Compose configuration, the same deployment process can be executed multiple times while consistently recreating the same expected environment and service structure. This reduces configuration drift and improves reproducibility across deployments.
+
+**Decisions I made and why:**
+
+Changed the database image from:
+`postgres:18-alpine`
+to:
+`postgres:16-alpine`
+
+**What went wrong/How I fixed it:**
+
+This change was a strategic decision whose intent was to avoid compatibility and volume mounting issues introduced within PostgreSQL 18 containers during deployment. The PostgreSQL 18 image expected a different internal data storage structure which caused continuous container restart loops and prevented the database service from starting correctly.
+
+Using `postgres:16-alpine` provided a more stable and compatible deployment environment for this lab scenario while still maintaining a lightweight Alpine-based image.
+
+**Thoughts/Considerations:**
+
+Using an orchestrator improves automation by making the application deployment more idempotent, as the order in which the installation, configuration, networking, and application startup occur is already defined inside the YAML file.
+
+This ensures that the same deployment process can be repeated consistently while reducing manual configuration drift and deployment inconsistencies. It also helps prevent mismatches such as networking and dependency issues because the services, ports, connectivity, and startup order are centrally controlled and automatically managed by the orchestrator.
