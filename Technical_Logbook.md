@@ -128,3 +128,55 @@ Using `postgres:16-alpine` provided a more stable and compatible deployment envi
 Using an orchestrator improves automation by making the application deployment more idempotent, as the order in which the installation, configuration, networking, and application startup occur is already defined inside the YAML file.
 
 This ensures that the same deployment process can be repeated consistently while reducing manual configuration drift and deployment inconsistencies. It also helps prevent mismatches such as networking and dependency issues because the services, ports, connectivity, and startup order are centrally controlled and automatically managed by the orchestrator.
+
+[WEEK 3]
+
+**What I built**
+
+Installed a local cluster development environment using Minikube and used Kubernetes to orchestrate the application deployment.
+
+Minikube was used because of the facilities it provides such as easy local Kubernetes cluster setup and orchestration testing directly on the host machine. Kubectl was used as the main CLI to interact with the Kubernetes environment.
+
+Developed Kubernetes manifest files for each layer of the application, including Deployment and Service manifests. Isolation of these functions into separate files improves troubleshooting, scalability and workload management.
+
+Replicas and self-healing mechanisms were implemented to reduce fatal failures and improve automated recovery. Multiple replicas were created to distribute traffic during peak usage hours with the help of Kubernetes load balancing.
+
+Example:
+spec:
+  replicas: 3
+
+This ensures Kubernetes continuously maintains the desired number of pod replicas defined in the declarative configuration.
+
+Services were implemented to provide stable networking communication between pods and application layers. This ensures workloads can communicate reliably even if pod IP addresses change during runtime.
+
+**Decisions I made and why:**
+
+Three replicas were used for the frontend and backend deployments while only one replica was used for the database deployment.
+
+The reason for this decision was to distribute traffic more efficiently during busy periods and improve availability if one of the frontend or backend pods failed.
+
+The database deployment remained with a single replica because database replication and state management require additional configuration and were outside the current project scope.
+
+**What went wrong/How I fixed it:**
+
+Frontend and backend deployments initially failed with the following Kubernetes error:
+ImagePullBackOff
+
+This issue occurred because Kubernetes attempted to pull the images from an external registry instead of using the local Docker images already built inside the development environment.
+
+To troubleshoot the issue the following configuration was added to the Deployment manifests:
+
+spec:
+  containers:
+  - name: frontend
+    image: frontend-image
+    imagePullPolicy: IfNotPresent
+
+The line:
+imagePullPolicy: IfNotPresent
+
+forces Kubernetes to use the local image if it already exists instead of always attempting to pull it from an external registry.
+
+**Thoughts/Considerations:**
+
+When deploying a multi-tier cloud-native application it is important to assume failures and unexpected conditions will occur. Because of this the infrastructure should always be designed with resilience, scalability, automation and recovery mechanisms in mind to reduce downtime and improve reliability.
