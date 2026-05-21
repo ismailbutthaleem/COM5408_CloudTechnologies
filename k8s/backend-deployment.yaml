@@ -21,29 +21,49 @@ spec:
       - name: backend
         image: backend-image
         imagePullPolicy: IfNotPresent
-        ports: 
+
+        ports:
         - containerPort: 5000
+
         env:
         - name: ALLOWED_ORIGIN
-          value: "*"
-        - name: DB_HOST
-          value: "database"
-        - name: DB_NAME
-          value: "todo"
-        - name: DB_PORT
-          value: "5432"
-        - name: PORT 
-          value: "5000"
-        -name: DB_USER
-         valueFrom:
-          secretKeyRef:
-          name: db-secret 
-          key: POSTGRES_USER
-         -name: DB_PASSWORD
-         valueFrom:
-          secretKeyRef:
-          name: db-secret 
-          key: POSTGRES_PASSWORD
-        
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-backend
+              key: ALLOWED_ORIGIN
 
-        
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-backend
+              key: DB_HOST
+
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-backend
+              key: DB_NAME
+
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-backend
+              key: DB_PORT
+
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-backend
+              key: PORT
+
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_PASSWORD
