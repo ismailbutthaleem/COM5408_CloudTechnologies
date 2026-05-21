@@ -29,31 +29,31 @@ spec:
         - name: ALLOWED_ORIGIN
           valueFrom:
             configMapKeyRef:
-              name: configmap-backend
+              name: db-configmap
               key: ALLOWED_ORIGIN
 
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: configmap-backend
+              name: db-configmap
               key: DB_HOST
 
         - name: DB_NAME
           valueFrom:
             configMapKeyRef:
-              name: configmap-backend
+              name: db-configmap
               key: DB_NAME
 
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
-              name: configmap-backend
+              name: db-configmap
               key: DB_PORT
 
         - name: PORT
           valueFrom:
             configMapKeyRef:
-              name: configmap-backend
+              name: db-configmap
               key: PORT
 
         - name: DB_USER
