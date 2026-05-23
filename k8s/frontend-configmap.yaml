@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 
 metadata:
-  name: frontend
+  name: frontend-configmap 
 
 data:
   REACT_APP_API_URL: "http://backend-service:5000/api/todos"

@@ -20,6 +20,7 @@ spec:
       containers:
       - name: postgres
         image: postgres:14-alpine
+        imagePullPolicy: IfNotPresent
 
         ports:
         - containerPort: 5432
@@ -56,3 +57,22 @@ spec:
       - name: db-init-script-volume
         configMap:
           name: db-init-script-configmap
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-script-configmap
+
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS todos (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      completed BOOLEAN DEFAULT FALSE
+    );
+
+    INSERT INTO todos (title, completed) VALUES
+    ('Learn Docker', FALSE),
+    ('Build ToDo App', TRUE);
