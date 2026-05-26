@@ -180,3 +180,37 @@ forces Kubernetes to use the local image if it already exists instead of always 
 **Thoughts/Considerations:**
 
 When deploying a multi-tier cloud-native application it is important to assume failures and unexpected conditions will occur. Because of this the infrastructure should always be designed with resilience, scalability, automation and recovery mechanisms in mind to reduce downtime and improve reliability.
+
+[WEEK 4]
+
+**What I built**
+
+Configured and implemented Kubernetes Network Policies and RBAC controls to comply with a zero-trust security model and reduce the attack surface of the application.
+
+The network policies created enforced strict communication between application tiers. The frontend layer can communicate with the backend layer only, while direct communication between the frontend and database layer is blocked. The backend layer is the only layer allowed to communicate with the PostgreSQL database.
+
+This design decision was made because the frontend is the user-facing side of the application and should never directly access the database. Allowing frontend-to-database communication would expose the database unnecessarily and break separation between application layers. The backend is responsible for securely handling requests, validation, and database operations before communicating with the database layer.
+
+RBAC controls were also implemented using ServiceAccounts, Roles, and RoleBindings.
+
+**Decisions I made and why**
+
+Implemented two RBAC configurations following the principle of least privilege.
+
+The first RBAC configuration was created for a frontend deployment ServiceAccount with read-only permissions. This account can only view deployment and pod information using permissions such as get, watch, and list. It cannot create, modify, or delete Kubernetes resources. This was implemented to reduce unnecessary privileges and minimise potential damage if the frontend layer becomes compromised.
+
+The second RBAC configuration was implemented for the backend deployment using a dedicated ServiceAccount with no unnecessary Kubernetes API permissions. The backend application does not require direct interaction with the Kubernetes API to function, therefore access was intentionally restricted to reduce attack surface and improve workload isolation.
+
+Verification was performed using kubectl auth can-i commands to confirm that allowed actions succeeded while unauthorised actions such as deleting pods or accessing secrets were denied.
+
+**What went wrong / How I fixed it**
+
+During deployment testing, the frontend application continuously threw Axios “Network Error” exceptions and was unable to communicate with the backend API.
+
+The issue was traced back to the frontend ConfigMap. The API URL inside the ConfigMap had accidentally not been saved correctly, meaning the frontend pods were still using an old API endpoint which no longer existed. As a result, the frontend application attempted to send requests to an invalid address.
+
+To troubleshoot the issue, I connected into one of the frontend pods using kubectl exec and used echo $REACT_APP_API_URL to inspect the active environment variable inside the running container. This confirmed that the pod was still using the incorrect API URL even though the ConfigMap file itself appeared correct.
+
+The issue was fixed by correcting and saving the ConfigMap properly, re-applying it using kubectl apply -f, and restarting the frontend deployment pods so the updated environment variable could be injected into the containers.
+
+An additional issue occurred where frontend pods became stuck in a ContainerCreating state due to a Minikube/Calico networking problem. This was resolved by restarting the Minikube cluster, which restored the networking components and allowed the pods to deploy correctly.
