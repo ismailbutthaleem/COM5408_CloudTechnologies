@@ -17,6 +17,8 @@ spec:
         app: backend
 
     spec:
+      serviceAccountName: backend-sa
+
       containers:
       - name: backend
         image: backend:latest

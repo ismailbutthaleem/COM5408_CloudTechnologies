@@ -17,6 +17,7 @@ spec:
         app: frontend
 
     spec:
+      serviceAccountName: app-viewer-sa
       containers:
       - name: frontend
         image: frontend:latest 
