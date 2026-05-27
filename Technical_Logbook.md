@@ -219,6 +219,28 @@ An additional issue occurred where frontend pods became stuck in a ContainerCrea
 
 **What I built**
 
+Deployed Prometheus and Grafana to have better observability over deployments and pods.
+
+Prometheus is a monitoring and metrics collecting system that is used to get information such as CPU usage, memory usage, errors and failures as well as processes that occur within a deployment or service. Grafana on the other hand is a software that facilitates for us to view all this information structurally in the web browser through dashboards.
+
+Helm was used to install both Prometheus and Grafana.
+
+**Decisions I made and why**
+
+Used Prometheus queries to view different aspects of our frontend, backend and database deployments as this is faster and more efficient than manually checking individual resources one by one.
+
+**Thoughts/Considerations:**
+
+Although kubectl commands can be used to check deployment or pod status, they do not provide enough detail and depth as compared to Prometheus and Grafana dashboards.
+
+Scalability is also another reason of why these resources would be beneficial to use as in an organization with multiple pods or deployments it is not efficient to check one by one with the use of commands their health status or other metrics.
+
+With Prometheus and Grafana all these metrics are available in an easy-to-use dashboard which improves monitoring, troubleshooting and observability within the Kubernetes environment.
+
+[WEEK 5]
+
+**What I built**
+
 Deployed a serverless event-driven function as a proof-of-concept to explain its advantages. The function is called figlet and its main purpose is to print whatever is written when invoking it in an artistic ASCII format.
 
 To deploy the OpenFaaS framework Helm charts were used with the following commands:
@@ -245,6 +267,30 @@ To deploy a simple proof-of-concept function, a complex function was not chosen 
 
 The implementation was mainly used to demonstrate how serverless functions can process lightweight requests independently from the main backend application instead of increasing unnecessary workload within the full application stack.
 
-[WEEK 4]
+[WEEK 5]
 
 **What I built**
+
+Created three Kubernetes manifest files for edge computing pods. The implementation of these edge computing resources is mainly so that small requests can be handled faster locally instead of having to be processed by the database. This is a facility for users that are not near to the database and need fast responses.
+
+Kubernetes manifests used for these include:
+
+- Deployment
+- Service
+- Ingress
+
+**Decisions I made and why**
+
+An nginx:1.25-alpine image was used as it is lightweight, fast and reliable for small quick operations that a user may need. The service being chosen as ClusterIP is so that the deployment is not exposed to the public. This enhances security measures as well as minimizes the attacker’s attack window.
+
+Ingress was used because even if nodes need to stay local to their environment and isolated, routing is still necessary to access the web and interact with users.
+
+The combination of a lightweight image, isolation and routing is what makes this deployment powerful for a web-based application as users will experience a smooth experience without delays while still maintaining this service secure from the outside world.
+
+**Thoughts/Considerations:**
+
+Cloud-native technologies have loads of advantages that make these infrastructures better over on-premises solutions as they do not depend on a lot of physical hardware to be carried out.
+
+By having explored monitoring agents such as OpenFaaS and cloud edge computing resources such as k3d it is now evident that cloud solutions evolve and find themselves in constant development. They present far more resilience, scalability and cost-optimization resources which makes them the go-to choice for big companies.
+
+However as seen in the development of this project, technology always has vulnerable points within systems therefore administrators need to be constantly up to date monitoring their systems and remaining on constant alert.
