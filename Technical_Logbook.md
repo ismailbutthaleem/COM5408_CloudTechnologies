@@ -214,3 +214,37 @@ To troubleshoot the issue, I connected into one of the frontend pods using kubec
 The issue was fixed by correcting and saving the ConfigMap properly, re-applying it using kubectl apply -f, and restarting the frontend deployment pods so the updated environment variable could be injected into the containers.
 
 An additional issue occurred where frontend pods became stuck in a ContainerCreating state due to a Minikube/Calico networking problem. This was resolved by restarting the Minikube cluster, which restored the networking components and allowed the pods to deploy correctly.
+
+[WEEK 4]
+
+**What I built**
+
+Deployed a serverless event-driven function as a proof-of-concept to explain its advantages. The function is called figlet and its main purpose is to print whatever is written when invoking it in an artistic ASCII format.
+
+To deploy the OpenFaaS framework Helm charts were used with the following commands:
+
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+helm repo update
+
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+
+helm upgrade openfaas --install openfaas/openfaas `
+  --namespace openfaas `
+  --set functionNamespace=openfaas-fn `
+  --set generateBasicAuth=true
+
+The function was then deployed and invoked using:
+
+faas-cli store deploy figlet --gateway http://127.0.0.1:8080
+
+echo "Todo created: Learn Kubernetes" | faas-cli invoke figlet --gateway http://127.0.0.1:8080
+
+**Decisions I made and why**
+
+To deploy a simple proof-of-concept function, a complex function was not chosen as it is not needed for the aim of this simple three-tier web application. This saved engineering time and improved efficiency so focus could be implemented into the main core of the application instead of small event-driven functions.
+
+The implementation was mainly used to demonstrate how serverless functions can process lightweight requests independently from the main backend application instead of increasing unnecessary workload within the full application stack.
+
+[WEEK 4]
+
+**What I built**
