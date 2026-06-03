@@ -271,7 +271,7 @@ The implementation was mainly used to demonstrate how serverless functions can p
 
 **What I built**
 
-Created three Kubernetes manifest files for edge computing pods. The implementation of these edge computing resources is mainly so that small requests can be handled faster locally instead of having to be processed by the database. This is a facility for users that are not near to the database and need fast responses.
+Created three Kubernetes manifest files for edge computing pods. The implementation of these edge computing resources is mainly so that small requests can be handled faster locally instead of having to be processed by the database. This is a facility for users that are not near to the database and need fast responses. These resources were deployed within a lightweight K3s/K3d edge environment to simulate a resource-constrained edge node.
 
 Kubernetes manifests used for these include:
 
