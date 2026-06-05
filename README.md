@@ -22,7 +22,7 @@ Backend API
 |
 PostgreSQL Database
 
-**Prequisits**
+**Prerequisites**
 
 All the following technologies must be installed locally:
 
@@ -34,11 +34,11 @@ OpenFaaS CLI
 
 ** Clone repository and deploy images***
 
-git clone <repository>
+git clone https://github.com/ismailbutthaleem/COM5408_CloudTechnologies
 
 cd app
 
-Start the docker engine by opening the app, then:
+Start Docker Desktop, then:
 
 docker build -t frontend:latest ./web
 
@@ -72,7 +72,7 @@ kubectl apply -f k8s/
 
 kubectl get pods
 
-kubectl get services
+kubectl get svc
 
 kubectl get deployments
 
@@ -107,6 +107,8 @@ kubectl port-forward -n openfaas svc/gateway 8080:8080
 **Verify**
 
 faas-cli list
+
+kubectl get pods -n openfaas
 
 **Expected Outcome**
 
