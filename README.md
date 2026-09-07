@@ -1,115 +1,150 @@
-ACME-Streamly Cloud Native Application
+# ACME-Streamly Cloud Native Application
 
-This project transforms a legacy monolithic application into a three-tier cloud-native application using Docker, Kubernetes and modern cloud-native technologies.
+A three-tier cloud-native application developed as part of my BSc Cyber Security coursework.
 
-Technologies Used:
+The project involved containerising and deploying a frontend, backend API and PostgreSQL database using Docker and Kubernetes, with Kubernetes security controls, monitoring and edge/serverless technologies.
 
-* Docker
-* Docker Compose
-* Kubernetes
-* Minikube
-* PostgreSQL
-* Prometheus
-* Grafana
-* OpenFaaS
-* K3s Edge Computing
+## Technologies Used
 
-**Architecture**
+- Docker
+- Docker Compose
+- Kubernetes
+- Minikube
+- PostgreSQL
+- Prometheus
+- Grafana
+- OpenFaaS
+- K3s
+- Helm
 
+## Architecture
+
+```text
 Frontend
-|
+   |
 Backend API
-|
+   |
 PostgreSQL Database
+```
 
-**Prerequisites**
+## Security
 
-All the following technologies must be installed locally:
+The Kubernetes deployment includes security controls such as:
 
-Docker Desktop
-Minikube
-kubectl
-Helm
-OpenFaaS CLI
+- Kubernetes Secrets for sensitive database configuration
+- NetworkPolicies restricting communication between application tiers
+- Separation of frontend, backend and database workloads
+- ClusterIP exposure for the database to avoid unnecessary external access
 
-** Clone repository and deploy images***
+## Prerequisites
 
-git clone https://github.com/ismailbutthaleem/COM5408_CloudTechnologies
+The following technologies must be installed locally:
 
-cd app
+- Docker Desktop
+- Minikube
+- kubectl
+- Helm
+- OpenFaaS CLI
+
+## Clone Repository and Build Images
+
+```bash
+git clone https://github.com/ismailbutthaleem/kubernetes-cloud-security-lab
+cd kubernetes-cloud-security-lab
+```
 
 Start Docker Desktop, then:
 
+```bash
 docker build -t frontend:latest ./web
-
 docker build -t backend:latest ./backend
+```
 
-**Verify**
+### Verify
 
+```bash
 docker images
+```
 
-**Expected outcome**
+**Expected outcome:** The frontend and backend images should appear in the image list.
 
-You can see the images there
+## Start Kubernetes Cluster
 
-**Start Kubernetes Cluster**
-
+```bash
 minikube start
+```
 
-**Verify**
+### Verify
 
+```bash
 minikube status
+```
 
-**Expected Outcome**
+**Expected outcome:** The Kubernetes cluster should be running correctly.
 
-The Kubernetes cluster should be running correctly.
+## Deploy to Kubernetes
 
-**Apply all kubernetes manifests files**
+Apply the Kubernetes manifests:
 
+```bash
 kubectl apply -f k8s/
+```
 
-**Verify**
+### Verify
 
+```bash
 kubectl get pods
-
 kubectl get svc
-
 kubectl get deployments
+```
 
-**Expected Outcome**
+**Expected outcome:** The Kubernetes resources should appear as defined in the manifest files, with the required replicas running.
 
-All resources that were verified should appear with those commands as specified in the manifest files (amount of replicas and state should be running if applicable).
+## Access the Application
 
-**Access Application**
-
+```bash
 minikube service frontend-service
+```
 
-**Expected Outcome**
+**Expected outcome:** The application should open in the browser and communication between the frontend, backend and database should be operational.
 
-The application should open in the browser and communication between frontend, backend and database should be operational.
+## Monitoring Stack
 
-**Monitoring Stack**
+Install the Prometheus and Grafana monitoring stack:
 
+```bash
 helm install monitoring prometheus-community/kube-prometheus-stack
+```
 
-**Verify**
+### Verify
 
+```bash
 kubectl get pods
+```
 
-**Expected Outcome**
+**Expected outcome:** Prometheus and Grafana pods should be running.
 
-Prometheus and Grafana pods should be running.
+## OpenFaaS
 
-**OpenFaaS**
+Forward the OpenFaaS gateway:
 
+```bash
 kubectl port-forward -n openfaas svc/gateway 8080:8080
+```
 
-**Verify**
+### Verify
 
+```bash
 faas-cli list
-
 kubectl get pods -n openfaas
+```
 
-**Expected Outcome**
+**Expected outcome:** The deployed function should appear in the OpenFaaS gateway.
 
-The deployed function should appear in the OpenFaaS gateway.
+## Documentation
+
+The development process, implementation decisions and troubleshooting carried out throughout the project are documented in [`Technical_Logbook.md`](Technical_Logbook.md).
+
+## Project Context
+
+This project was completed as part of my BSc Cyber Security coursework and was developed and tested within a local lab environment.
